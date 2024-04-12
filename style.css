@@ -1,0 +1,116 @@
+/* Reset de estilos */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  #cover {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  #cover img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .card-btn {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .card-btn:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .card-btn img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .table-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .data-table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  
+  #cardTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #cardTable th, #cardTable td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #cardTable th.col1 {
+    width: 20%;
+  }
+  
+  #cardTable tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .form-container {
+    text-align: center;
+  }
+  
+  #dataForm input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  #dataForm button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  #dataForm button:hover {
+    background-color: #45a049;
+  }
+
+  .card-btn img {
+    max-width: 100px; /* Cambia el valor según sea necesario */
+    max-height: 100px; /* Cambia el valor según sea necesario */
+    border-radius: 8px;
+  }
+  
