@@ -1,75 +1,73 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Obtener referencia a la tabla y al formulario
-    const tabla = document.getElementById("cardTable");
-    const formulario = document.getElementById("dataForm");
+  const form = document.getElementById("addCardForm");
+  const tableBody = document.querySelector("#cardTable tbody");
+  const cardButtons = document.querySelectorAll(".card-container button");
   
-    // Obtener datos del localStorage o inicializar un array vacío si no hay datos
-    let datos = JSON.parse(localStorage.getItem("datos")) || [];
-  
-    // Función para renderizar la tabla
-    function renderizarTabla() {
-      // Limpiar contenido de la tabla
-      tabla.innerHTML = "";
-  
-      // Ordenar los datos por cantidad de cartas de mayor a menor
-      datos.sort((a, b) => b.Cantidad - a.Cantidad);
-  
-      // Iterar sobre los datos para agregar filas a la tabla
-      datos.forEach((elemento, indice) => {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td>${elemento.Numero}</td>
-            <td>${elemento.Carta}</td>
-            <td>${elemento.Cantidad}</td>
-        `;
-        tabla.appendChild(fila);
-      });
-    }
-  
-    // Función para manejar el envío del formulario
-    function manejarEnvioFormulario(evento) {
-      evento.preventDefault();
-      const numeroInput = document.querySelector("#dataForm input[name='cardNumber']").value;
-      const cartaInput = document.querySelector("#dataForm input[name='cardName']").value;
-  
-      // Verificar que se ingresen datos válidos
-      if (numeroInput && cartaInput) {
-        // Agregar el nuevo elemento al array de datos
-        datos.push({ Numero: numeroInput, Carta: cartaInput, Cantidad: 0 });
-  
-        // Limpiar los campos del formulario
-        evento.target.reset();
-  
-        // Actualizar los datos en el localStorage y renderizar la tabla
-        localStorage.setItem("datos", JSON.stringify(datos));
-        renderizarTabla();
-      } else {
-        alert("Por favor complete todos los campos del formulario.");
+  // Lee el archivo JSON y guarda los datos en el localStorage
+  fetch('data.json')
+      .then(response => response.json())
+      .then(data => {
+          localStorage.setItem('cardData', JSON.stringify(data));
+          populateTable(data); // Llama a la función para poblar la tabla
+      })
+      .catch(error => console.error('Error al cargar el archivo JSON:', error));
+
+  // Evento de clic en los botones de la clase "card-container"
+  cardButtons.forEach(button => {
+    button.addEventListener("click", function () {
+      const cardNumber = this.getAttribute('data-numero');
+      const jsonData = JSON.parse(localStorage.getItem('cardData'));
+      if (jsonData && jsonData[cardNumber - 1]) {
+        jsonData[cardNumber - 1].cantidad++;
+        localStorage.setItem('cardData', JSON.stringify(jsonData));
+        // Limpiar la tabla antes de volver a poblarla
+        tableBody.innerHTML = '';
+        populateTable(jsonData);
       }
-    }
-  
-    // Función para manejar el clic en los botones de las cartas
-    function manejarClicCarta(evento) {
-      const cartaSeleccionada = evento.currentTarget.dataset.card;
-      // Buscar la carta seleccionada en los datos y aumentar su cantidad
-      const carta = datos.find(elemento => elemento.Numero === cartaSeleccionada);
-      if (carta) {
-        carta.Cantidad++;
-      }
-  
-      // Actualizar los datos en el localStorage y renderizar la tabla
-      localStorage.setItem("datos", JSON.stringify(datos));
-      renderizarTabla();
-    }
-  
-    // Agregar event listeners
-    document.querySelectorAll(".card-btn").forEach(carta => {
-      carta.addEventListener("click", manejarClicCarta);
     });
-  
-    formulario.addEventListener("submit", manejarEnvioFormulario);
-  
-    // Renderizar la tabla al cargar la página
-    renderizarTabla();
   });
-  
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault(); // Evita que el formulario se envíe normalmente
+
+    // Captura los valores del formulario
+    const cardNumber = document.getElementById("cardNumber").value;
+    const cardName = document.getElementById("cardName").value;
+
+    // Verifica si el elemento ya existe en el JSON
+    const jsonData = JSON.parse(localStorage.getItem('cardData'));
+    const existingCard = jsonData.find(card => card.numero === cardNumber && card.carta === cardName);
+
+    if (existingCard) {
+      // Si el elemento ya existe, aumenta la cantidad en 1
+      existingCard.cantidad++;
+      localStorage.setItem('cardData', JSON.stringify(jsonData));
+    } else {
+      // Si el elemento no existe, añádelo al JSON con cantidad 1
+      jsonData.push({ numero: cardNumber, carta: cardName, cantidad: 1 });
+      localStorage.setItem('cardData', JSON.stringify(jsonData));
+    }
+
+    // Limpiar la tabla antes de volver a poblarla
+    tableBody.innerHTML = '';
+
+    // Vuelve a poblar la tabla con los datos actualizados
+    populateTable(jsonData);
+
+    // Resetea el formulario
+    form.reset();
+  });
+
+  // Función para poblar la tabla con los datos del localStorage
+  function populateTable(data) {
+    data.forEach(item => {
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+          <td>${item.numero}</td>
+          <td>${item.carta}</td>
+          <td>${item.cantidad}</td>
+      `;
+      tableBody.appendChild(newRow);
+    });
+  }
+});
